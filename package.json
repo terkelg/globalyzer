@@ -1,6 +1,6 @@
 {
   "name": "globalyzer",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Detects and extract the glob part of a string",
   "main": "src/index.js",
   "repository": {
