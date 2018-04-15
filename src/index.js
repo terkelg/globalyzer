@@ -1,9 +1,6 @@
 'use strict';
 
-const os = require('os');
 const path = require('path');
-const isWin = os.platform() === 'win32';
-
 const CHARS = { '{': '}', '(': ')', '[': ']'};
 const STRICT = /\\(.)|(^!|\*|[\].+)]\?|\[[^\\\]]+\]|\{[^\\}]+\}|\(\?[:!=][^\\)]+\)|\([^|]+\|[^\\)]+\)|(\\).|([@?!+*]\(.*\)))/;
 const RELAXED = /\\(.)|(^!|[*?{}()[\]]|\(\?)/;
@@ -45,20 +42,19 @@ function isglob(str, { strict = true } = {}) {
  * @returns {String} static path section of glob
  */
 function parent(str, { strict = false } = {}) {
-  if (isWin && str.includes('/'))
-    str = str.split('\\').join('/');
+  str = path.normalize(str).replace(/\/|\\/, '/');
 
-	// special case for strings ending in enclosure containing path separator
-	if (/[\{\[].*[\/]*.*[\}\]]$/.test(str)) str += '/';
+  // special case for strings ending in enclosure containing path separator
+  if (/[\{\[].*[\/]*.*[\}\]]$/.test(str)) str += '/';
 
-	// preserves full path in case of trailing path separator
-	str += 'a';
+  // preserves full path in case of trailing path separator
+  str += 'a';
 
-	do {str = path.dirname(str)}
-	while (isglob(str, {strict}) || /(^|[^\\])([\{\[]|\([^\)]+$)/.test(str));
+  do {str = path.dirname(str)}
+  while (isglob(str, {strict}) || /(^|[^\\])([\{\[]|\([^\)]+$)/.test(str));
 
-	// remove escape chars and return result
-	return str.replace(/\\([\*\?\|\[\]\(\)\{\}])/g, '$1');
+  // remove escape chars and return result
+  return str.replace(/\\([\*\?\|\[\]\(\)\{\}])/g, '$1');
 };
 
 
@@ -70,26 +66,26 @@ function parent(str, { strict = false } = {}) {
  * @returns {Object} object with parsed path
  */
 function globalyzer(pattern, opts = {}) {
-    let base = parent(pattern, opts);
-    let isGlob = isglob(pattern, opts);
-    let glob;
+  let base = parent(pattern, opts);
+  let isGlob = isglob(pattern, opts);
+  let glob;
 
-    if (base != '.') {
-        glob = pattern.substr(base.length);
-        if (glob.startsWith('/')) glob = glob.substr(1);
-    } else {
-        glob = pattern;
-    }
-
-    if (!isGlob) {
-        base = path.dirname(pattern);
-        glob = base !== '.' ? pattern.substr(base.length) : pattern;
-    }
-
-    if (glob.startsWith('./')) glob = glob.substr(2);
+  if (base != '.') {
+    glob = pattern.substr(base.length);
     if (glob.startsWith('/')) glob = glob.substr(1);
+  } else {
+    glob = pattern;
+  }
 
-    return { base, glob, isGlob };
+  if (!isGlob) {
+    base = path.dirname(pattern);
+    glob = base !== '.' ? pattern.substr(base.length) : pattern;
+  }
+
+  if (glob.startsWith('./')) glob = glob.substr(2);
+  if (glob.startsWith('/')) glob = glob.substr(1);
+
+  return { base, glob, isGlob };
 }
 
 
