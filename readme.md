@@ -1,4 +1,4 @@
-# globalyzer
+# globalyzer [![Build Status](https://travis-ci.org/terkelg/globalyzer.svg?branch=master)](https://travis-ci.org/terkelg/globalyzer)
 
 >  Detect and extract the static part of a glob string
 
@@ -30,7 +30,7 @@ globalyzer('foo/bar/**/baz');
 Type: `function`<br>
 Returns: `{ base, glob, isGlob }`
 
-Returns an object with the (non-glob) base path and the actual pattern.
+Returns an object with the (non-glob) base path and the actual pattern and a is-glob flag.
 
 #### options.strict
 
