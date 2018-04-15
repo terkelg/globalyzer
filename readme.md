@@ -1,6 +1,6 @@
 # globalyzer
 
->  Detect and extract the glob part of a string
+>  Detect and extract the static part of a glob string
 
 Utility to detect if a string contains a glob and then split it in a glob and none-glob part.
 
