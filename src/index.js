@@ -45,6 +45,7 @@ function parent(str, { strict = false } = {}) {
   if (isWin32 && str.indexOf('/') < 0) {
     console.log('win', str);
     str = str.split('\\').join('/');
+    console.log(str);
   }
 
   // special case for strings ending in enclosure containing path separator
@@ -53,7 +54,7 @@ function parent(str, { strict = false } = {}) {
   // preserves full path in case of trailing path separator
   str += 'a';
 
-  do {str = path.dirname(str)}
+  do {str = path.posix.dirname(str)}
   while (isglob(str, {strict}) || /(^|[^\\])([\{\[]|\([^\)]+$)/.test(str));
 
   // remove escape chars and return result
