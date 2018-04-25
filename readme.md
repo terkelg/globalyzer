@@ -1,4 +1,4 @@
-# globalyzer [![Build Status](https://travis-ci.org/terkelg/globalyzer.svg?branch=master)](https://travis-ci.org/terkelg/globalyzer)
+# globalyzer [![Build Status](https://travis-ci.org/terkelg/globalyzer.svg?branch=master)](https://travis-ci.org/terkelg/globalyzer)[![Build status](https://ci.appveyor.com/api/projects/status/0xqnmxt99rsnnjqh?svg=true)](https://ci.appveyor.com/project/terkelg/globalyzer)
 
 >  Detect and extract the static part of a glob string
 
