@@ -50,6 +50,7 @@ function parent(str, { strict = false } = {}) {
   // preserves full path in case of trailing path separator
   str += 'a';
 
+  console.log(str);
   do {str = path.dirname(str)}
   while (isglob(str, {strict}) || /(^|[^\\])([\{\[]|\([^\)]+$)/.test(str));
 
