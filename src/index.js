@@ -1,3 +1,4 @@
+const isWin32 = require('os').platform() === 'win32';
 const path = require('path');
 const CHARS = { '{': '}', '(': ')', '[': ']'};
 const STRICT = /\\(.)|(^!|\*|[\].+)]\?|\[[^\\\]]+\]|\{[^\\}]+\}|\(\?[:!=][^\\)]+\)|\([^|]+\|[^\\)]+\)|(\\).|([@?!+*]\(.*\)))/;
@@ -41,6 +42,7 @@ function isglob(str, { strict = true } = {}) {
  */
 function parent(str, { strict = false } = {}) {
   //str = path.normalize(str).replace(/\/|\\/, '/');
+  if (isWin32 && str.indexOf('/') < 0) str = str.split('\\').join('/');
 
   // special case for strings ending in enclosure containing path separator
   if (/[\{\[].*[\/]*.*[\}\]]$/.test(str)) str += '/';
