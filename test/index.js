@@ -1,5 +1,4 @@
 test = require('tape');
-const { join } = require('path');
 const $ = require('../src');
 
 test('standard', t => {

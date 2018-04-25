@@ -40,7 +40,7 @@ function isglob(str, { strict = true } = {}) {
  * @returns {String} static path section of glob
  */
 function parent(str, { strict = false } = {}) {
-  str = path.normalize(str).replace(/\/|\\/, '/');
+  //str = path.normalize(str).replace(/\/|\\/, '/');
 
   // special case for strings ending in enclosure containing path separator
   if (/[\{\[].*[\/]*.*[\}\]]$/.test(str)) str += '/';
