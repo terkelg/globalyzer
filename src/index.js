@@ -42,7 +42,10 @@ function isglob(str, { strict = true } = {}) {
  */
 function parent(str, { strict = false } = {}) {
   //str = path.normalize(str).replace(/\/|\\/, '/');
-  if (isWin32 && str.indexOf('/') < 0) str = str.split('\\').join('/');
+  if (isWin32 && str.indexOf('/') < 0) {
+    console.log('win', str);
+    str = str.split('\\').join('/');
+  }
 
   // special case for strings ending in enclosure containing path separator
   if (/[\{\[].*[\/]*.*[\}\]]$/.test(str)) str += '/';
@@ -50,7 +53,6 @@ function parent(str, { strict = false } = {}) {
   // preserves full path in case of trailing path separator
   str += 'a';
 
-  console.log(str);
   do {str = path.dirname(str)}
   while (isglob(str, {strict}) || /(^|[^\\])([\{\[]|\([^\)]+$)/.test(str));
 
