@@ -95,6 +95,7 @@ test('base', t => {
     ['js/test/**/{images,components}/*.js', 'js/test'],
     ['ooga/{booga,sooga}/**/dooga/{eooga,fooga}', 'ooga']
   ].forEach(([x, y]) => {
+    console.log(x, y);
     t.is($(x).base, y);
   });
 
