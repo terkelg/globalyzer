@@ -129,7 +129,7 @@ test('isGlob', t => {
   ['\\!\\*.js', '\\!foo', '\\!foo.js', '\\*(foo).js', '\\*.js', '\\*\\*/abc.js', 'abc/\\*.js'].forEach(x => {
     t.false($(x).isGlob);
   });
-  
+
   // should be false if it is not a glob pattern
   ['', '~/abc', '~/abc', '~/(abc)', '+~(abc)', '.', '@.(abc)', 'aa', 'who?', 'why!?', 'where???',
   'abc!/def/!ghi.js', 'abc.js', 'abc/def/!ghi.js', 'abc/def/ghi.js'].forEach(x => {
@@ -191,7 +191,7 @@ test('isGlob', t => {
   });
 
   t.true($('abc/(a|b\\).js', {strict: false}));
- 
+
   // should be true if the path has a regex character class
   ['abc/[abc].js', 'abc/[^abc].js', 'abc/[1-3].js'].forEach(x => {
     t.true($(x).isGlob);

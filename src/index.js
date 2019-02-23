@@ -2,6 +2,7 @@ const path = require('path');
 const CHARS = { '{': '}', '(': ')', '[': ']'};
 const STRICT = /\\(.)|(^!|\*|[\].+)]\?|\[[^\\\]]+\]|\{[^\\}]+\}|\(\?[:!=][^\\)]+\)|\([^|]+\|[^\\)]+\)|(\\).|([@?!+*]\(.*\)))/;
 const RELAXED = /\\(.)|(^!|[*?{}()[\]]|\(\?)/;
+const TRIM = /^(.\/|\/)/;
 
 /**
  * Detect if a string cointains glob
@@ -69,8 +70,7 @@ function globalyzer(pattern, opts = {}) {
   let glob;
 
   if (base != '.') {
-    glob = pattern.substr(base.length);
-    if (glob.startsWith('/')) glob = glob.substr(1);
+    glob = pattern.replace(TRIM, '').substr(base.replace(TRIM, '').length);
   } else {
     glob = pattern;
   }
@@ -80,8 +80,7 @@ function globalyzer(pattern, opts = {}) {
     glob = base !== '.' ? pattern.substr(base.length) : pattern;
   }
 
-  if (glob.startsWith('./')) glob = glob.substr(2);
-  if (glob.startsWith('/')) glob = glob.substr(1);
+  glob = glob.replace(TRIM, '');
 
   return { base, glob, isGlob };
 }
