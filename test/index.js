@@ -61,14 +61,14 @@ test('base', t => {
     ['path/**/*', 'path'],
     ['path/**/subdir/foo.*', 'path'],
     ['path/subdir/**/foo.js', 'path/subdir'],
-    ['path/!subdir/foo.js', 'path/!subdir'],
+    ['path/!subdir/foo.js', 'path'],
     // should respect escaped characters
-    ['path/\\*\\*/subdir/foo.*', 'path/**/subdir'],
-    ['path/\\[\\*\\]/subdir/foo.*', 'path/[*]/subdir'],
+    ['path/\\*\\*/subdir/foo.*', 'path'],
+    ['path/\\[\\*\\]/subdir/foo.*', 'path'],
     ['path/\\*(a|b)/subdir/foo.*', 'path'],
-    ['path/\\*/(a|b)/subdir/foo.*', 'path/*'],
-    ['path/\\*\\(a\\|b\\)/subdir/foo.*', 'path/*(a|b)/subdir'],
-    ['path/\\[foo bar\\]/subdir/foo.*', 'path/[foo bar]/subdir'],
+    ['path/\\*/(a|b)/subdir/foo.*', 'path'],
+    ['path/\\*\\(a\\|b\\)/subdir/foo.*', 'path'],
+    ['path/\\[foo bar\\]/subdir/foo.*', 'path'],
     ['path/\\[bar]/', 'path'],
     ['path/foo \\[bar]/', 'path'],
     // should return parent dirname from non-glob paths
@@ -117,7 +117,7 @@ test('glob', t => {
   });
 
   t.end();
-})
+});
 
 test('isGlob', t => {
   // should be true if it is a glob pattern
