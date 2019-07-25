@@ -64,6 +64,8 @@ function parent(str, { strict = false } = {}) {
  * @returns {Object} object with parsed path
  */
 function globalyzer(pattern, opts = {}) {
+  if (pattern.startsWith('./')) pattern = pattern.substr(2);
+
   let base = parent(pattern, opts);
   let isGlob = isglob(pattern, opts);
   let glob;
