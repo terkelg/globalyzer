@@ -40,7 +40,7 @@ function isglob(str, { strict = true } = {}) {
  * @returns {String} static path section of glob
  */
 function parent(str, { strict = false } = {}) {
-  str = path.normalize(str).replace(/\/|\\/, '/');
+  str = path.posix.normalize(str);
 
   // special case for strings ending in enclosure containing path separator
   if (/[\{\[].*[\/]*.*[\}\]]$/.test(str)) str += '/';
@@ -64,6 +64,8 @@ function parent(str, { strict = false } = {}) {
  * @returns {Object} object with parsed path
  */
 function globalyzer(pattern, opts = {}) {
+  if (pattern.startsWith('./')) pattern = pattern.substr(2);
+
   let base = parent(pattern, opts);
   let isGlob = isglob(pattern, opts);
   let glob;
@@ -71,6 +73,8 @@ function globalyzer(pattern, opts = {}) {
   if (base != '.') {
     glob = pattern.substr(base.length);
     if (glob.startsWith('/')) glob = glob.substr(1);
+    // resolve `../` withing paths
+    glob = path.posix.normalize(glob)
   } else {
     glob = pattern;
   }
