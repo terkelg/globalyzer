@@ -14,7 +14,7 @@ function isglob(str, { strict = true } = {}) {
   if (str === '') return false;
   let match, rgx = strict ? STRICT : RELAXED;
 
-  while ((match = rgx.exec(str))) {
+  while (match = rgx.exec(str)) {
     if (match[2]) return true;
     let idx = match.index + match[0].length;
 
@@ -39,20 +39,36 @@ function isglob(str, { strict = true } = {}) {
  * @param {String} str Path/glob string
  * @returns {String} static path section of glob
  */
-function parent(str, { strict = false } = {}) {
-  str = path.normalize(str).replace(/\/|\\/, '/');
+function parse(str, opts) {
+  // unescape character sequences & split by path separators
+  const segs = str.replace(/\\([\*\?\|\[\]\(\)\{\}])/g, '$1').split(/\/|\\+/g);
+  const rgx = /(^|[^\\])([\{\[]|\([^\)]+$)/; // dunno what this is
+  const strict = !!opts.strict;
 
-  // special case for strings ending in enclosure containing path separator
-  if (/[\{\[].*[\/]*.*[\}\]]$/.test(str)) str += '/';
+  let i=0, out='', tmp, isGlob;
 
-  // preserves full path in case of trailing path separator
-  str += 'a';
+  if (segs[0] == '') {
+    segs.shift();
+    out += '/';
+  }
 
-  do {str = path.dirname(str)}
-  while (isglob(str, {strict}) || /(^|[^\\])([\{\[]|\([^\)]+$)/.test(str));
+  for (; i < segs.length; i++) {
+    tmp = segs[i];
+    if (isglob(tmp, { strict })) {
+      isGlob = true;
+      break;
+    } else if (rgx.test(tmp)) {
+      break;
+    } else {
+      out = path.join(out, tmp);
+    }
+  }
 
-  // remove escape chars and return result
-  return str.replace(/\\([\*\?\|\[\]\(\)\{\}])/g, '$1');
+  return {
+    isGlob: !!isGlob,
+    glob: segs.slice(i).join('/'),
+    base: path.normalize(out).replace(/\/|\\/, '/')
+  };
 };
 
 
@@ -64,24 +80,20 @@ function parent(str, { strict = false } = {}) {
  * @returns {Object} object with parsed path
  */
 function globalyzer(pattern, opts = {}) {
-  let base = parent(pattern, opts);
-  let isGlob = isglob(pattern, opts);
-  let glob;
-
-  if (base != '.') {
-    glob = pattern.substr(base.length);
-    if (glob.startsWith('/')) glob = glob.substr(1);
-  } else {
-    glob = pattern;
-  }
+  console.log(`RECEIVED: "${pattern}"`);
+  let { base, isGlob, glob } = parse(pattern, opts);
+  console.log(`~> base: "${base}"`);
+  console.log(`~> glob: "${glob}"`);
+  console.log(`~> isGlob: "${isGlob}"`);
 
   if (!isGlob) {
-    base = path.dirname(pattern);
-    glob = base !== '.' ? pattern.substr(base.length) : pattern;
+    let obj = path.parse(base);
+    base = obj.dir || '.';
+    glob = obj.base;
   }
 
-  if (glob.startsWith('./')) glob = glob.substr(2);
-  if (glob.startsWith('/')) glob = glob.substr(1);
+  glob = glob.replace(/^(.\/|\/)/, '');
+  console.log(`~> sending "${base}" + "${glob}"`);
 
   return { base, glob, isGlob };
 }

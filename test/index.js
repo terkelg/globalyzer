@@ -61,14 +61,14 @@ test('base', t => {
     ['path/**/*', 'path'],
     ['path/**/subdir/foo.*', 'path'],
     ['path/subdir/**/foo.js', 'path/subdir'],
-    ['path/!subdir/foo.js', 'path/!subdir'],
+    ['path/!subdir/foo.js', 'path'],
     // should respect escaped characters
-    ['path/\\*\\*/subdir/foo.*', 'path/**/subdir'],
-    ['path/\\[\\*\\]/subdir/foo.*', 'path/[*]/subdir'],
+    ['path/\\*\\*/subdir/foo.*', 'path'],
+    ['path/\\[\\*\\]/subdir/foo.*', 'path'],
     ['path/\\*(a|b)/subdir/foo.*', 'path'],
-    ['path/\\*/(a|b)/subdir/foo.*', 'path/*'],
-    ['path/\\*\\(a\\|b\\)/subdir/foo.*', 'path/*(a|b)/subdir'],
-    ['path/\\[foo bar\\]/subdir/foo.*', 'path/[foo bar]/subdir'],
+    ['path/\\*/(a|b)/subdir/foo.*', 'path'],
+    ['path/\\*\\(a\\|b\\)/subdir/foo.*', 'path'],
+    ['path/\\[foo bar\\]/subdir/foo.*', 'path'],
     ['path/\\[bar]/', 'path'],
     ['path/foo \\[bar]/', 'path'],
     // should return parent dirname from non-glob paths
@@ -117,7 +117,7 @@ test('glob', t => {
   });
 
   t.end();
-})
+});
 
 test('isGlob', t => {
   // should be true if it is a glob pattern
@@ -129,7 +129,7 @@ test('isGlob', t => {
   ['\\!\\*.js', '\\!foo', '\\!foo.js', '\\*(foo).js', '\\*.js', '\\*\\*/abc.js', 'abc/\\*.js'].forEach(x => {
     t.false($(x).isGlob);
   });
-  
+
   // should be false if it is not a glob pattern
   ['', '~/abc', '~/abc', '~/(abc)', '+~(abc)', '.', '@.(abc)', 'aa', 'who?', 'why!?', 'where???',
   'abc!/def/!ghi.js', 'abc.js', 'abc/def/!ghi.js', 'abc/def/ghi.js'].forEach(x => {
@@ -191,7 +191,7 @@ test('isGlob', t => {
   });
 
   t.true($('abc/(a|b\\).js', {strict: false}));
- 
+
   // should be true if the path has a regex character class
   ['abc/[abc].js', 'abc/[^abc].js', 'abc/[1-3].js'].forEach(x => {
     t.true($(x).isGlob);
